@@ -6,7 +6,7 @@ on:
   pull_request:
       types: [opened, synchronize, reopened]
 jobs:
-  build:
+  install:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -15,13 +15,22 @@ jobs:
       with:
         entrypoint: yarn
         args: install
+  staging:
+    runs-on: ubuntu-latest
+    if: contains(github.event, "pull_request")
+    steps:
     - name: Build
       uses: docker://node:12
       with:
         entrypoint: yarn
-        args: build:production
-    - name: Serverless
-      uses: docker://node:12
-      with:
-        entrypoint: npx
-        args: serverless -v      
+        args: build:staging
+  production:
+    runs-on: ubuntu-latest
+    if: contains(github.event, "push")
+    steps:
+        - name: Build
+          uses: docker://node:12
+          with:
+            entrypoint: yarn
+            args: build:production
+    
