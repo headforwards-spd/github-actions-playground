@@ -1,5 +1,9 @@
 name: Build
-on: [push, pull_request]
+on:
+  push:
+    branches: [main, production]
+  pull_request:
+      types: [opened, synchronize, reopened]
 jobs:
   install:
     runs-on: ubuntu-latest
