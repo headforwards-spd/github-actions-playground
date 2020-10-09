@@ -13,16 +13,12 @@ jobs:
     - name: Install
       uses: docker://node:12
       with:
-        entrypoint: yarn
-        args: install
+        entrypoint: yarn install
     - name: Build
       uses: docker://node:12
       with:
-        entrypoint: yarn
-        args: build:production
+        entrypoint: yarn build:production
     - name: Serverless
       uses: docker://node:12
       with:
-        entrypoint: serverless
-        args: -v
-      
+        entrypoint: npx serverless -v      
