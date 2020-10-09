@@ -1,0 +1,13 @@
+{
+  "name": "github-actions-playground",
+  "repository": "git@github.com:headforwards-spd/github-actions-playground.git",
+  "scripts": {
+    "build:local": "echo \"build local\"",
+    "build:staging": "echo \"build staging\"",
+    "build:production": "echo \"build production\""
+  },
+  "devDependencies": {
+    "serverless": "^2.5.0",
+    "serverless-python-requirements": "^5.1.0"
+  }
+}
