@@ -6,7 +6,7 @@ on:
   pull_request:
       types: [opened, synchronize, reopened]
 jobs:
-  docker-example:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -15,3 +15,14 @@ jobs:
       with:
         entrypoint: yarn
         args: install
+    - name: Build
+      uses: docker://node:12
+      with:
+        entrypoint: yarn
+        args: build:production
+    - name: Serverless
+      uses: docker://node:12
+      with:
+        entrypoint: serverless
+        args: -v
+      
