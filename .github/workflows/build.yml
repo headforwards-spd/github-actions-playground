@@ -15,22 +15,16 @@ jobs:
       with:
         entrypoint: yarn
         args: install
-  staging:
-    runs-on: ubuntu-latest
-    if: contains(github.event, "pull_request")
-    steps:
-    - name: Build
+    - name: Build Staging
+      if: contains(github.event, "pull_request")
       uses: docker://node:12
       with:
         entrypoint: yarn
         args: build:staging
-  production:
-    runs-on: ubuntu-latest
-    if: contains(github.event, "push")
-    steps:
-        - name: Build
-          uses: docker://node:12
-          with:
-            entrypoint: yarn
-            args: build:production
+    - name: Build Production
+      if: contains(github.event, "push")
+      uses: docker://node:12
+      with:
+        entrypoint: yarn
+        args: build:production
     
