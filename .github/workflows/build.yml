@@ -11,13 +11,13 @@ jobs:
         entrypoint: yarn
         args: install
     - name: Build Staging
-      if: contains(github.event_name, "pull_request")
+      if: ${{ github.event_name == 'pull_request' }}
       uses: docker://node:12
       with:
         entrypoint: yarn
         args: build:staging
     - name: Build Production
-      if: contains(github.event_name, "push")
+      if: ${{ github.event_name == 'push' }}
       uses: docker://node:12
       with:
         entrypoint: yarn
