@@ -1,29 +1,68 @@
 name: Build
-on:
-  push:
-    branches: [main, production]
-  pull_request:
-      types: [opened, synchronize, reopened]
+on: { pull_request: { types: [ opened, synchronize, reopened ] } }
 jobs:
   install:
+    name: Install
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Install
-      uses: docker://node:12
+    - uses: actions/cache@v1
       with:
-        entrypoint: yarn
-        args: install
-    - name: Build Staging
-      if: ${{ github.event_name == 'pull_request' }}
-      uses: docker://node:12
-      with:
-        entrypoint: yarn
-        args: build:staging
-    - name: Build Production
-      if: ${{ github.event_name == 'push' }}
-      uses: docker://node:12
-      with:
-        entrypoint: yarn
-        args: build:production
+        path: node_modules
+        key: node_modules-${{ hashFiles('yarn.lock') }}
+        restore-keys: node_modules-
+    - uses: actions/setup-node@v1
+      with: { node-version: '12' }
+    - run: yarn install
+
+  test-unit:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - uses: actions/cache@v1
+        with:
+          path: reports
+          key: reports-${{ github.run_id }}
+      - uses: actions/setup-node@v1
+        with: { node-version: '12' }
+      - run: mkdir -p reports/unit
+      - run: |
+          touch reports/unit/unit-report
+          yarn test:unit
+
+  test-e2e:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - uses: actions/cache@v1
+        with:
+          path: reports
+          key: reports-${{ github.run_id }}
+      - uses: actions/setup-node@v1
+        with: { node-version: '12' }
+      - run: mkdir -p reports/e2e
+      - run: |
+          touch reports/e2e/e2e-report
+          yarn test:e2e
+
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    needs: [ test-unit, test-e2e ]
+    steps:
+      - uses: actions/checkout@v2
+        with: { fetch-depth: 0 }
+      - uses: actions/cache@v1
+        with:
+          path: reports
+          key: reports-${{ github.run_id }}
+      - run: |
+          ls -lha reports/unit
+          ls -lha reports/e2e
+      - uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     
