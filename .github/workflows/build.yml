@@ -25,10 +25,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with: { node-version: '12' }
-      - run: |
-          mkdir -p reports/unit
-          touch reports/unit/unit-report
-          yarn test:unit
+      - run: mkdir -p reports/unit
+      - run: yarn test:unit
       - uses: actions/upload-artifact@v2
         with:
           name: unit
@@ -43,9 +41,7 @@ jobs:
       - uses: actions/setup-node@v1
         with: { node-version: '12' }
       - run: mkdir -p reports/e2e
-      - run: |
-          touch reports/e2e/e2e-report
-          yarn test:e2e
+      - run: yarn test:e2e
       - uses: actions/upload-artifact@v2
         with:
           name: e2e
@@ -61,10 +57,6 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           path: reports/
-      - run: |
-          ls -lha reports
-          ls -lha reports/unit
-          ls -lha reports/e2e
       - uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
