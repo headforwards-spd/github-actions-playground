@@ -23,16 +23,16 @@ jobs:
     needs: install
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v1
-        with:
-          path: reports/unit
-          key: reports-unit-${{ github.run_id }}
       - uses: actions/setup-node@v1
         with: { node-version: '12' }
-      - run: mkdir -p reports/unit
       - run: |
+          mkdir -p reports/unit
           touch reports/unit/unit-report
           yarn test:unit
+      - uses: actions/upload-artifact@v2
+        with:
+          name: reports
+          path: reports
 
   test-e2e:
     name: e2e Test
@@ -40,16 +40,16 @@ jobs:
     needs: install
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/cache@v1
-        with:
-          path: reports/e2e
-          key: reports-e2e-${{ github.run_id }}
       - uses: actions/setup-node@v1
         with: { node-version: '12' }
       - run: mkdir -p reports/e2e
       - run: |
           touch reports/e2e/e2e-report
           yarn test:e2e
+      - uses: actions/upload-artifact@v2
+        with:
+          name: reports
+          path: reports
 
   sonarcloud:
     name: SonarCloud
@@ -58,14 +58,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with: { fetch-depth: 0 }
-      - uses: actions/cache@v1
+      - uses: actions/download-artifact@v2
         with:
-          path: reports/unit
-          key: reports-unit-${{ github.run_id }}
-      - uses: actions/cache@v1
-        with:
-          path: reports/e2e
-          key: reports-e2e-${{ github.run_id }}
+          name: reports
       - run: |
           ls -lha reports
           ls -lha reports/unit
