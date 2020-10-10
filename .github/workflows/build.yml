@@ -1,7 +1,9 @@
 name: Build
 on:
   push: { branches: [ main ] }
-  pull_request: { types: [ opened, synchronize, reopened ] } 
+  pull_request: 
+    types: [ opened, synchronize, reopened ]
+    branches: main
 jobs:
   install:
     name: Install
