@@ -23,8 +23,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/cache@v1
         with:
-          path: reports
-          key: reports-${{ github.run_id }}
+          path: reports/unit
+          key: reports-units-${{ github.run_id }}
       - uses: actions/setup-node@v1
         with: { node-version: '12' }
       - run: mkdir -p reports/unit
@@ -40,8 +40,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/cache@v1
         with:
-          path: reports
-          key: reports-${{ github.run_id }}
+          path: reports/e2e
+          key: reports-e2e-${{ github.run_id }}
       - uses: actions/setup-node@v1
         with: { node-version: '12' }
       - run: mkdir -p reports/e2e
@@ -58,9 +58,14 @@ jobs:
         with: { fetch-depth: 0 }
       - uses: actions/cache@v1
         with:
-          path: reports
-          key: reports-${{ github.run_id }}
+          path: reports/unit
+          key: reports-unit-${{ github.run_id }}
+      - uses: actions/cache@v1
+        with:
+          path: reports/e2e
+          key: reports-e2e-${{ github.run_id }}
       - run: |
+          ls -lha reports
           ls -lha reports/unit
           ls -lha reports/e2e
       - uses: SonarSource/sonarcloud-github-action@master
