@@ -31,8 +31,7 @@ jobs:
           yarn test:unit
       - uses: actions/upload-artifact@v2
         with:
-          name: unit-reports
-          path: reports/unit/
+          path: reports/
 
   test-e2e:
     name: e2e Test
@@ -48,8 +47,7 @@ jobs:
           yarn test:e2e
       - uses: actions/upload-artifact@v2
         with:
-          name: e2e-reports
-          path: reports/e2e/
+          path: reports/
 
   sonarcloud:
     name: SonarCloud
@@ -60,12 +58,7 @@ jobs:
         with: { fetch-depth: 0 }
       - uses: actions/download-artifact@v2
         with:
-          name: unit-reports
-          path: reports/unit/
-      - uses: actions/download-artifact@v2
-        with:
-          name: e2e-reports
-          path: reports/e2e/
+          path: reports
       - run: |
           ls -lha
           ls -lha reports
