@@ -15,7 +15,7 @@ jobs:
         restore-keys: node_modules-
     - uses: actions/setup-node@v1
       with: { node-version: '12' }
-    - run: yarn install
+    - run: yarn --frozen-lockfile
 
   test-unit:
     name: Unit Test
